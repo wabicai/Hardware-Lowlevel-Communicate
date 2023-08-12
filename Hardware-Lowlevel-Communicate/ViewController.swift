@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var initButton: UIButton!
     var searchDeviceButton: UIButton!
     var getFeaturesButton: UIButton!
+    var getBtcAddressButton: UIButton!
     var bridge: WKWebViewJavascriptBridge!
     var manager: CBCentralManager!
     var peripheral: CBPeripheral!
@@ -28,7 +29,7 @@ class ViewController: UIViewController {
     var buffer = Data()
     var bufferLength: UInt32 = UInt32(0)
     
-    // callback
+    // Callbacks cache
     var searchDeviceCallback: (([[String: String]]) -> Void)?
     var receiveCallback: ((String) -> Void)?
     
@@ -48,12 +49,8 @@ class ViewController: UIViewController {
         
         bridge = WKWebViewJavascriptBridge(webView: webView)
         registerBridgeHandler()
-        bridge.register(handlerName: "testiOSCallback") { (parameters, callback) in
-            print("testiOSCallback called: \(String(describing: parameters))")
-            callback?("Response from testiOSCallback")
-        }
         
-        // 加载 index.html
+        // load index.html
         if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html", inDirectory: "web/dist") {
             let url = URL(fileURLWithPath: htmlPath)
             let request = URLRequest(url: url)
@@ -95,6 +92,15 @@ class ViewController: UIViewController {
         getFeaturesButton.addTarget(self, action: #selector(onGetFeatures), for: .touchUpInside)
         view.addSubview(getFeaturesButton)
         
+        // getBtcAddress button
+        getFeaturesButton = UIButton.init(frame: CGRect(x: 0, y: 174, width: UIScreen.main.bounds.width, height: 30))
+        getFeaturesButton.translatesAutoresizingMaskIntoConstraints = false
+        getFeaturesButton.setTitle("Get Bitcoin Address", for: .normal)
+        getFeaturesButton.setTitleColor(UIColor.blue, for: .normal)
+        getFeaturesButton.setTitleColor(UIColor.gray, for: .highlighted)
+        getFeaturesButton.addTarget(self, action: #selector(onGetBitcoinAddress), for: .touchUpInside)
+        view.addSubview(getFeaturesButton)
+        
     }
     
     @objc func onInitializeSDK() {
@@ -105,26 +111,18 @@ class ViewController: UIViewController {
     
     @objc func onSearch() {
         bridge.call(handlerName: "searchDevice", data: nil, callback: {(responseData) in
-            print("searchDevice Result ===>>>: ", responseData ?? "")
-            // 检查 responseData 是否为字典类型
-            // 嵌套好深啊，ChatGPT 教我写的
-            if let responseDictionary = responseData as? [String: Any] {
-                if let success = responseDictionary["success"] as? Int {
-                    if success == 1 {
-                        print("success =>!!!")
-                        if let payload = responseDictionary["payload"] as? [Any] {
-                            if let device = payload.first {
-                                if let deviceDictionary = device as? [String: Any] {
-                                    if let connectId = deviceDictionary["connectId"] as? String,
-                                       let deviceId = deviceDictionary["deviceId"] as? String {
-                                        print(connectId, deviceId)
-                                        self.device = Device(connectId: connectId, deviceId: deviceId)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+            print("searchDevice result ===>>>: ", responseData ?? "")
+            if let responseDictionary = responseData as? [String: Any],
+               let success = responseDictionary["success"] as? Int,
+               success == 1,
+               let payload = responseDictionary["payload"] as? [Any],
+               let device = payload.first,
+               let deviceDictionary = device as? [String: Any],
+               let connectId = deviceDictionary["connectId"] as? String,
+               let deviceId = deviceDictionary["deviceId"] as? String {
+                   print(connectId, deviceId)
+                   self.device = Device(connectId: connectId, deviceId: deviceId)
+                   return
             }
         })
     }
@@ -159,7 +157,7 @@ class ViewController: UIViewController {
         
         // send
         bridge.register(handlerName: "send") { params, callback in
-            print("called send method: ", params)
+            print("called send method: ", params ?? "")
             if let data = params?["data"] {
                 self.peripheral.writeValue((data as! String).hexData, for: self.writeCharacteristic, type: .withoutResponse)
                 callback?(["success": true])
@@ -178,7 +176,19 @@ class ViewController: UIViewController {
     
     @objc func onGetFeatures() {
         bridge.call(handlerName: "getFeatures", data: ["connectId": self.device?.getConnectId()]) { responseData in
-            print("getFeatures response: ", responseData)
+            print("getFeatures response: ", responseData ?? "")
+        }
+    }
+    
+    @objc func onGetBitcoinAddress() {
+        bridge.call(handlerName: "btcGetAddress", data: [
+            "connectId": self.device?.getConnectId() ?? "",
+            "deviceId": self.device?.getDeviceId() ?? "",
+            "path": "m/49'/0'/0'/0/0",
+            "coin": "btc",
+            "showOnOneKey": true
+        ] as [String : Any]) { response in
+            print("get bitcoin address response: ", response ?? "")
         }
     }
 
@@ -218,7 +228,6 @@ extension ViewController : CBPeripheralDelegate {
             
             //discover characteristics of services
             for service in services {
-                print("service uuid: -> : ", service.uuid)
                 peripheral.discoverCharacteristics(nil, for: service)
             }
         }
@@ -257,7 +266,7 @@ extension ViewController : CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         if error != nil {
             // 处理错误情况
-            print("characteristic monitor error: ", error)
+            print("characteristic monitor error: ", error ?? "")
             return
         }
         
@@ -277,7 +286,6 @@ extension ViewController : CBPeripheralDelegate {
                     
                     // 移除协议中的 magic 字符后，拼接 buffer
                     buffer = receivedData.subdata(in: 3..<receivedData.count)
-//                    print("buffer: ", [UInt8](buffer))
                 } else {
                     // 非首包数据直接拼接 buffer
                     buffer.append(receivedData)

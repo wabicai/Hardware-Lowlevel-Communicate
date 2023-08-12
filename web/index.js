@@ -1,8 +1,15 @@
 import HardwareSDK from '@onekeyfe/hd-common-connect-sdk'
 
-function checkSDK() {
-	console.log('===> hello world: ', HardwareSDK)
-	console.log(HardwareSDK)
+const UI_EVENT = 'UI_EVENT';
+const UI_REQUEST = {
+  REQUEST_PIN: 'ui-request_pin',
+	REQUEST_PASSPHRASE: 'ui-request_passphrase',
+  REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
+	REQUEST_BUTTON: 'ui-button',
+}
+const UI_RESPONSE = {
+  RECEIVE_PIN: 'ui-receive_pin',
+  RECEIVE_PASSPHRASE: 'ui-receive_passphrase',
 }
 
 let bridge
@@ -20,15 +27,7 @@ function setupWKWebViewJavascriptBridge(callback) {
 
 setupWKWebViewJavascriptBridge(function (_bridge) {
 	bridge = _bridge
-	/* Initialize your app here */
 	registerBridgeHandler(_bridge)
-
-	bridge.registerHandler('testJavascriptHandler', function (data, responseCallback) {
-		console.log('iOS called testJavascriptHandler with', data)
-		responseCallback({
-			'Javascript Says': 'Right back atcha!'
-		})
-	})
 })
 
 let isInitialized = false
@@ -55,12 +54,7 @@ function getHardwareSDKInstance() {
 			console.log('HardwareSDK init success')
 			isInitialized = true
 			resolve(HardwareSDK)
-
-			// HardwareSDK.on("LOG_EVENT", (messages) => {
-			// 	if (messages && Array.isArray(messages.payload)) {
-			// 		console.log(messages.payload.join(' '));
-			// 	}
-			// });
+			listenHardwareEvent(HardwareSDK)
 		} catch (e) {
 			reject(e)
 		}
@@ -80,7 +74,6 @@ function createLowlevelPlugin() {
 		send: (uuid, data) => {
 			return new Promise((resolve) => {
 				bridge.callHandler('send', {uuid, data}, (response) => {
-					console.log('call send response: ', response)
 					resolve(response)
 				})
 			})
@@ -88,16 +81,13 @@ function createLowlevelPlugin() {
 		receive: () => {
 			return new Promise((resolve) => {
 				bridge.callHandler('receive', {}, (response) => {
-					console.log('call receive response: ', response)
 					resolve(response)
 				})
 			})
 		},
 		connect: (uuid) => {
 			return new Promise((resolve) => {
-				bridge.callHandler('connect', {uuid}, (response) => {
-					console.log('call pre connect response: ', response)
-				})
+				bridge.callHandler('connect', {uuid})
 				bridge.registerHandler('connectFinished', () => {
 					resolve()
 				})
@@ -121,6 +111,32 @@ function createLowlevelPlugin() {
 	}
 
 	return plugin
+}
+
+function listenHardwareEvent(SDK) {
+	SDK.on(UI_EVENT, (message) => {
+		if (message.type === UI_REQUEST.REQUEST_PIN) {
+			// enter pin code on the device
+			SDK.uiResponse({
+				type: UI_RESPONSE.RECEIVE_PIN,
+				payload: '@@ONEKEY_INPUT_PIN_IN_DEVICE',
+			});	
+		}
+		if (message.type === UI_REQUEST.REQUEST_PASSPHRASE) {
+			// enter passphrase on the device
+			SDK.uiResponse({
+				type: UI_RESPONSE.RECEIVE_PASSPHRASE,
+				payload: {
+					value: '',
+					passphraseOnDevice: true,
+					save: false,
+				},
+			});
+		}
+		if (message.type === UI_REQUEST.REQUEST_BUTTON) {
+			console.log('request button, should show dialog on client')
+		}
+	})
 }
 
 function registerBridgeHandler(bridge) {
@@ -149,6 +165,29 @@ function registerBridgeHandler(bridge) {
 		try {
 			const SDK = await getHardwareSDKInstance()
 			const response = await SDK.getFeatures(data.connectId)
+			callback(response)
+		} catch (e) {
+			console.error(e)
+			callback({success: false, error: e.message})
+		}
+	})
+
+	bridge.registerHandler('btcGetAddress', async (data, callback) => {
+		try {
+			const SDK = await getHardwareSDKInstance()
+			const { connectId, deviceId, path, coin, showOnOneKey } = data
+			// 该方法只需要钱包开启 passphrase 时调用，如果钱包未启用 passphrase，不需要调用该方法，以便减少与硬件的交互次数，提高用户体验
+			// passphraseState 理论上应该由 native 传入，创建完一个隐藏钱包后客户端对 passphraseState 进行缓存
+			const passphraseStateRes = await SDK.getPassphraseState(connectId);
+
+			const params = {
+				path,
+				coin,
+				showOnOneKey,
+			}
+			// 如果用户打开 passphrase ，则需要传入参数 passphraseState
+			passphraseStateRes.payload && (params['passphraseState'] = passphraseStateRes.payload)
+			const response = await SDK.btcGetAddress(connectId, deviceId, params)
 			callback(response)
 		} catch (e) {
 			console.error(e)
