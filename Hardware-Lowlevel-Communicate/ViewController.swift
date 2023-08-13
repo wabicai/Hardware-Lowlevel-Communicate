@@ -93,13 +93,13 @@ class ViewController: UIViewController {
         view.addSubview(getFeaturesButton)
         
         // getBtcAddress button
-        getFeaturesButton = UIButton.init(frame: CGRect(x: 0, y: 174, width: UIScreen.main.bounds.width, height: 30))
-        getFeaturesButton.translatesAutoresizingMaskIntoConstraints = false
-        getFeaturesButton.setTitle("Get Bitcoin Address", for: .normal)
-        getFeaturesButton.setTitleColor(UIColor.blue, for: .normal)
-        getFeaturesButton.setTitleColor(UIColor.gray, for: .highlighted)
-        getFeaturesButton.addTarget(self, action: #selector(onGetBitcoinAddress), for: .touchUpInside)
-        view.addSubview(getFeaturesButton)
+        getBtcAddressButton = UIButton.init(frame: CGRect(x: 0, y: 174, width: UIScreen.main.bounds.width, height: 30))
+        getBtcAddressButton.translatesAutoresizingMaskIntoConstraints = false
+        getBtcAddressButton.setTitle("Get Bitcoin Address", for: .normal)
+        getBtcAddressButton.setTitleColor(UIColor.blue, for: .normal)
+        getBtcAddressButton.setTitleColor(UIColor.gray, for: .highlighted)
+        getBtcAddressButton.addTarget(self, action: #selector(onGetBitcoinAddress), for: .touchUpInside)
+        view.addSubview(getBtcAddressButton)
         
     }
     
