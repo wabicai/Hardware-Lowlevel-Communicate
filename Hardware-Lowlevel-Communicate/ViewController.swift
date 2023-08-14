@@ -26,12 +26,8 @@ class ViewController: UIViewController {
     
     let ServiceID = "00000001-0000-1000-8000-00805f9b34fb"
     
-    var buffer = Data()
-    var bufferLength: UInt32 = UInt32(0)
-    
     // Callbacks cache
     var searchDeviceCallback: (([[String: String]]) -> Void)?
-    var receiveCallback: ((String) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -276,29 +272,6 @@ extension ViewController : CBPeripheralDelegate {
             }
         }
     }
-}
-
-let COMMON_HEADER_SIZE = 6;
-let MESSAGE_TOP_CHAR: UInt8 = 63
-let MESSAGE_HEADER_BYTE: UInt8 = 35
-func isHeaderChunk(chunk: Data) -> Bool {
-    guard chunk.count >= 9 else {
-        return false
-    }
-    
-    let magicQuestionMark = Int(chunk[0])
-    let sharp1 = Int(chunk[1])
-    let sharp2 = Int(chunk[2])
-    
-    if
-        String(UnicodeScalar(magicQuestionMark)!) == String(UnicodeScalar(MESSAGE_TOP_CHAR)) &&
-        String(UnicodeScalar(sharp1)!) == String(UnicodeScalar(MESSAGE_HEADER_BYTE)) &&
-        String(UnicodeScalar(sharp2)!) == String(UnicodeScalar(MESSAGE_HEADER_BYTE))
-    {
-        return true
-    }
-    
-    return false
 }
 
 class Device {
