@@ -108,18 +108,6 @@ class ViewController: UIViewController {
     @objc func onSearch() {
         bridge.call(handlerName: "searchDevice", data: nil, callback: {(responseData) in
             print("searchDevice result ===>>>: ", responseData ?? "")
-            if let responseDictionary = responseData as? [String: Any],
-               let success = responseDictionary["success"] as? Int,
-               success == 1,
-               let payload = responseDictionary["payload"] as? [Any],
-               let device = payload.first,
-               let deviceDictionary = device as? [String: Any],
-               let connectId = deviceDictionary["connectId"] as? String,
-               let deviceId = deviceDictionary["deviceId"] as? String {
-                   print(connectId, deviceId)
-                   self.device = Device(connectId: connectId, deviceId: deviceId)
-                   return
-            }
         })
     }
     
@@ -169,8 +157,16 @@ class ViewController: UIViewController {
     }
     
     @objc func onGetFeatures() {
-        bridge.call(handlerName: "getFeatures", data: ["connectId": self.device?.getConnectId()]) { responseData in
+        bridge.call(handlerName: "getFeatures", data: ["connectId": self.peripheral.identifier.uuidString]) { responseData in
             print("getFeatures response: ", responseData ?? "")
+            if let responseDictionary = responseData as? [String: Any],
+               let success = responseDictionary["success"] as? Int,
+               success == 1,
+               let payload = responseDictionary["payload"] as? [String: Any],
+               let deviceId = payload["device_id"] as? String {
+                self.device = Device(connectId: self.device?.getConnectId() ?? self.peripheral.identifier.uuidString, deviceId: deviceId)
+                print("connectId: ", self.device?.getConnectId() ?? "", " deviceId: ", self.device?.getDeviceId() ?? "")
+            }
         }
     }
     
