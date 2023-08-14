@@ -1,4 +1,5 @@
 import HardwareSDK from '@onekeyfe/hd-common-connect-sdk'
+import { createDeferred, isHeaderChunk, COMMON_HEADER_SIZE } from './utils'
 
 const UI_EVENT = 'UI_EVENT';
 const UI_REQUEST = {
@@ -61,6 +62,7 @@ function getHardwareSDKInstance() {
 	})
 }
 
+let runPromise
 function createLowlevelPlugin() {
 	const plugin = {
 		enumerate: () => {
@@ -80,9 +82,11 @@ function createLowlevelPlugin() {
 		},
 		receive: () => {
 			return new Promise((resolve) => {
-				bridge.callHandler('receive', {}, (response) => {
-					resolve(response)
-				})
+				runPromise = createDeferred()
+				const response = runPromise.promise
+				resolve(response)
+				// bridge.callHandler('receive', {}, async (response) => {
+				// })
 			})
 		},
 		connect: (uuid) => {
@@ -159,6 +163,39 @@ function registerBridgeHandler(bridge) {
 			console.error(e)
 			callback({success: false, error: e.message})
 		}	
+	})
+
+
+	let bufferLength = 0;
+	let buffer = [];
+	bridge.registerHandler('monitorCharacteristic', async (hexString) => {
+		if (!runPromise) {
+			console.log('runPromise is not initialized, maybe not call receive')
+			return
+		}
+		try {
+			const data = Buffer.from(hexString, 'hex')
+			if (isHeaderChunk(data)) {
+				bufferLength = data.readInt32BE(5);
+				buffer = [...data.subarray(3)];
+			} else {
+				buffer = buffer.concat([...data])
+			}
+			if (buffer.length - COMMON_HEADER_SIZE >= bufferLength) {
+				const value = Buffer.from(buffer);
+				console.log(
+				  '[onekey-js-bridge] Received a complete packet of data, resolve Promise, ',
+				  'buffer: ',
+				  value
+				);
+				bufferLength = 0;
+				buffer = [];
+				runPromise.resolve(value.toString('hex'));
+			}
+		} catch (e) {
+			console.log('monitor data error: ', e)
+			runPromise.reject(e)
+		}
 	})
 
 	bridge.registerHandler('getFeatures', async (data, callback) => {

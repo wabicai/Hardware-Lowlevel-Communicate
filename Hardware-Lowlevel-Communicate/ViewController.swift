@@ -166,11 +166,9 @@ class ViewController: UIViewController {
         }
         
         // receive
-        bridge.register(handlerName: "receive") { _, callback in
-            if let _callback = callback {
-                self.receiveCallback = _callback
-            }
-        }
+//        bridge.register(handlerName: "receive") { _, callback in
+//            callback?(["success": true])
+//        }
    
     }
     
@@ -274,27 +272,7 @@ extension ViewController : CBPeripheralDelegate {
             if let value = characteristic.value {
                 let receivedData = value
                 print("received data: -> : ", receivedData.hexString)
-                
-                // 分析是否是第首包数据
-                if (isHeaderChunk(chunk: receivedData)) {
-                    print("isHeaderChunk: ", true)
-                    // 读取完整数据包长度
-                    bufferLength = receivedData.subdata(in: 5..<9).withUnsafeBytes { rawBuffer in
-                        rawBuffer.load(as: UInt32.self).bigEndian
-                    }
-                    print("bufferLength: ", bufferLength)
-                    
-                    // 移除协议中的 magic 字符后，拼接 buffer
-                    buffer = receivedData.subdata(in: 3..<receivedData.count)
-                } else {
-                    // 非首包数据直接拼接 buffer
-                    buffer.append(receivedData)
-                }
-                // 数据包长度接收完整后返回数据
-                if (buffer.count - COMMON_HEADER_SIZE >= bufferLength) {
-                    print("Received result ==> ", buffer.hexString)
-                    receiveCallback?(buffer.hexString)
-                }
+                bridge.call(handlerName: "monitorCharacteristic", data: receivedData.hexString)
             }
         }
     }
