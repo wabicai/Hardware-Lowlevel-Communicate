@@ -164,7 +164,9 @@ function registerBridgeHandler(bridge) {
 	bridge.registerHandler('getFeatures', async (data, callback) => {
 		try {
 			const SDK = await getHardwareSDKInstance()
-			const response = await SDK.getFeatures(data.connectId)
+			const response = await SDK.getFeatures(data.connectId, {
+				timeout: 60 * 1000 * 3 // Bluetooth pairing requires a longer connection timeout.
+			})
 			callback(response)
 		} catch (e) {
 			console.error(e)

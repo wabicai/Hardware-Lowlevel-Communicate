@@ -110,24 +110,24 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.1.tgz#8831ef002114670c603c458ab8b11328406953a9"
   integrity sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==
 
-"@onekeyfe/hd-common-connect-sdk@^0.3.23-alpha.2":
-  version "0.3.23-alpha.2"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-common-connect-sdk/-/hd-common-connect-sdk-0.3.23-alpha.2.tgz#f33a2e8e8972166724cd64c3b51d5a6a310c111a"
-  integrity sha512-HwB3B7HqpQ/YdrvG58CUvycgXcM0VzdZHdvvtX6hukR8h2Ht4HYf4BKQM5oHUcFBDSqiywP/hIQOIMC9VVrCVw==
+"@onekeyfe/hd-common-connect-sdk@^0.3.23-alpha.3":
+  version "0.3.23-alpha.3"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-common-connect-sdk/-/hd-common-connect-sdk-0.3.23-alpha.3.tgz#5442c73eba28ce72b583ade54c9518890791ae25"
+  integrity sha512-wGov1QaYCwTZ4Mq0XwIHgtawZ3VzuT+A+muoUziUjZNNv0S1/dogYlZ2OgMMnc/JAhnQW7MvgHAMGqxX00n8nQ==
   dependencies:
-    "@onekeyfe/hd-core" "^0.3.23-alpha.2"
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.2"
-    "@onekeyfe/hd-transport-http" "^0.3.23-alpha.2"
-    "@onekeyfe/hd-transport-lowlevel" "^0.3.23-alpha.2"
-    "@onekeyfe/hd-transport-webusb" "^0.3.23-alpha.2"
+    "@onekeyfe/hd-core" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-transport-http" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-transport-lowlevel" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-transport-webusb" "^0.3.23-alpha.3"
 
-"@onekeyfe/hd-core@^0.3.23-alpha.2":
-  version "0.3.23-alpha.2"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-core/-/hd-core-0.3.23-alpha.2.tgz#ed45ba468cb27bfc6a9257e6520d0971ac3b692f"
-  integrity sha512-SZRLnzl9EMzRBglCLGbnXejXTLz7qAO4LyGl2OGP3li7KX7L8Lz9CQ52HTVNmWmviENbJxdSrIPOwucuO382Aw==
+"@onekeyfe/hd-core@^0.3.23-alpha.3":
+  version "0.3.23-alpha.3"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-core/-/hd-core-0.3.23-alpha.3.tgz#2c9ceab14abff02d763b23a943839a01d1096cd3"
+  integrity sha512-NrZ5nyrsB1seoNKE3Nz9yoDnt/KGaqLzc4IOdVGxgs/hKtupzIm/tMVLGmvgDgBFALz0QHvtjsv06xsn3mTCCg==
   dependencies:
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.2"
-    "@onekeyfe/hd-transport" "^0.3.23-alpha.2"
+    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-transport" "^0.3.23-alpha.3"
     axios "^0.27.2"
     bignumber.js "^9.0.2"
     bytebuffer "^5.0.1"
@@ -135,40 +135,40 @@
     parse-uri "^1.0.7"
     semver "^7.3.7"
 
-"@onekeyfe/hd-shared@^0.3.23-alpha.2":
-  version "0.3.23-alpha.2"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-shared/-/hd-shared-0.3.23-alpha.2.tgz#46d6373a6773817a4b69cb6758269e84bd6cd10a"
-  integrity sha512-UAxcum2lLWn5NMU4EacN39CqyF5Wt+mGjlTimjbgB5/Ht9ZYU/GBhQP0+6DDrzw1ZIY7fzXZWx4obEbWBbTyBg==
+"@onekeyfe/hd-shared@^0.3.23-alpha.3":
+  version "0.3.23-alpha.3"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-shared/-/hd-shared-0.3.23-alpha.3.tgz#0dac94b88a6cdfdd865098da5a0eb6a612efeb14"
+  integrity sha512-rYdjx+atBmdxurQmqcmzZx7zPfmvM7reHmTktnEfPkvUGpJQztwbtz5W/+sGGeOjSB9h8snQs2/yeIERnK+mHA==
 
-"@onekeyfe/hd-transport-http@^0.3.23-alpha.2":
-  version "0.3.23-alpha.2"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-http/-/hd-transport-http-0.3.23-alpha.2.tgz#055d6b550af70b510d9419a6e3ac33d16174c45a"
-  integrity sha512-22eHEukl9ygDWeHf8JIakgmaW0LxBJlnw0PPmS3kr6DG3JoEY4Z28q6qvMfuNqVEc1A+vZ4H14vCw/MrsRdZNQ==
+"@onekeyfe/hd-transport-http@^0.3.23-alpha.3":
+  version "0.3.23-alpha.3"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-http/-/hd-transport-http-0.3.23-alpha.3.tgz#015743fb757f48ef9d184e9c93ffb3f654ae2721"
+  integrity sha512-b4ldrqC4KmjJqs4eKtWEXc2VG0YyqU464yi2hhvL5FzEaCsjBFXOiHiLESPxX+5/tX/FpBDy1Mnlt/wq/kjfwQ==
   dependencies:
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.2"
-    "@onekeyfe/hd-transport" "^0.3.23-alpha.2"
+    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-transport" "^0.3.23-alpha.3"
     axios "^0.27.2"
 
-"@onekeyfe/hd-transport-lowlevel@^0.3.23-alpha.2":
-  version "0.3.23-alpha.2"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-lowlevel/-/hd-transport-lowlevel-0.3.23-alpha.2.tgz#cbbda62b32fe757eb5fff43380cfeda0cab480e7"
-  integrity sha512-fakWf7y/r3IL/NYOd3FJOu2Rdr/qnxBcmgCW4sriC7/ZXbSv56uQ48K9AqiYFQAapZ2oK6CNFZwuVDm9l/31Jg==
+"@onekeyfe/hd-transport-lowlevel@^0.3.23-alpha.3":
+  version "0.3.23-alpha.3"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-lowlevel/-/hd-transport-lowlevel-0.3.23-alpha.3.tgz#8cca55331b239e1b96a91082400a7a97a0047a83"
+  integrity sha512-Yw3CwWI1MBMk4aJ/wlV9S5R+86fEStk83/SqO8/mWCGLQYU+zurlvcxL6KVkkxU08BjPZjhh1bcQrpa42wbtBQ==
   dependencies:
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.2"
-    "@onekeyfe/hd-transport" "^0.3.23-alpha.2"
+    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-transport" "^0.3.23-alpha.3"
 
-"@onekeyfe/hd-transport-webusb@^0.3.23-alpha.2":
-  version "0.3.23-alpha.2"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-webusb/-/hd-transport-webusb-0.3.23-alpha.2.tgz#c57a85ca361eba8e5483d81b3d9fa32f7ac8b3bf"
-  integrity sha512-75THWAqosIoU9Dkibe1Jw4T4jUjS2c5zmuYRDRyNKdyuJqP6AICxbkS1+cZpgve9sobnlJ04ilzvnfgzk55afg==
+"@onekeyfe/hd-transport-webusb@^0.3.23-alpha.3":
+  version "0.3.23-alpha.3"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-webusb/-/hd-transport-webusb-0.3.23-alpha.3.tgz#613c53c32c850b712e021a8156ed3420745515c3"
+  integrity sha512-6I+0Bmkyy0FcDEVpEuv8bejHgO7Kyawwap8ThClI6FZN8JDQBuEdgLQ7oNtYCpqXZGR1tvFAkHhpKoefbQ3jGQ==
   dependencies:
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.2"
-    "@onekeyfe/hd-transport" "^0.3.23-alpha.2"
+    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-transport" "^0.3.23-alpha.3"
 
-"@onekeyfe/hd-transport@^0.3.23-alpha.2":
-  version "0.3.23-alpha.2"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport/-/hd-transport-0.3.23-alpha.2.tgz#95bf4d02f331000289c9a3421109bf17c03c08a8"
-  integrity sha512-kkLajqNruC2ALSxvW/T1RponXJfv+mMiMw7hekqsTSxj53YY2ElPq2vF4Yec7Ll/b72to/eECit0EOzxNnhuXg==
+"@onekeyfe/hd-transport@^0.3.23-alpha.3":
+  version "0.3.23-alpha.3"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport/-/hd-transport-0.3.23-alpha.3.tgz#0c350defe136abc3196510de1078160cc4d3f878"
+  integrity sha512-F0Rt7bGjFKOBeYYwnUfNjMWs6KUUcKK7SeQ23ysyRJMnco2foFJ8GBiSk+398oH1HA6WwoD1TqAyKvT9S34BTw==
   dependencies:
     bytebuffer "^5.0.1"
     long "^4.0.0"
