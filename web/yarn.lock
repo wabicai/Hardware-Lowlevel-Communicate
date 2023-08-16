@@ -110,24 +110,24 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.1.tgz#8831ef002114670c603c458ab8b11328406953a9"
   integrity sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==
 
-"@onekeyfe/hd-common-connect-sdk@^0.3.23-alpha.3":
-  version "0.3.23-alpha.3"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-common-connect-sdk/-/hd-common-connect-sdk-0.3.23-alpha.3.tgz#5442c73eba28ce72b583ade54c9518890791ae25"
-  integrity sha512-wGov1QaYCwTZ4Mq0XwIHgtawZ3VzuT+A+muoUziUjZNNv0S1/dogYlZ2OgMMnc/JAhnQW7MvgHAMGqxX00n8nQ==
+"@onekeyfe/hd-common-connect-sdk@^0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-common-connect-sdk/-/hd-common-connect-sdk-0.3.26.tgz#745fed23206c3a03aca558ff60d7b4279905f8db"
+  integrity sha512-V57qC3StmYg+kCLZNWYKf8ZluVHKzUe7t6aFjXqtGFZ9p/55yXtFbV7QAWt99yEPstUKFBNJfOHHZvsmBixO8A==
   dependencies:
-    "@onekeyfe/hd-core" "^0.3.23-alpha.3"
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
-    "@onekeyfe/hd-transport-http" "^0.3.23-alpha.3"
-    "@onekeyfe/hd-transport-lowlevel" "^0.3.23-alpha.3"
-    "@onekeyfe/hd-transport-webusb" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-core" "^0.3.26"
+    "@onekeyfe/hd-shared" "^0.3.26"
+    "@onekeyfe/hd-transport-http" "^0.3.26"
+    "@onekeyfe/hd-transport-lowlevel" "^0.3.26"
+    "@onekeyfe/hd-transport-webusb" "^0.3.26"
 
-"@onekeyfe/hd-core@^0.3.23-alpha.3":
-  version "0.3.23-alpha.3"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-core/-/hd-core-0.3.23-alpha.3.tgz#2c9ceab14abff02d763b23a943839a01d1096cd3"
-  integrity sha512-NrZ5nyrsB1seoNKE3Nz9yoDnt/KGaqLzc4IOdVGxgs/hKtupzIm/tMVLGmvgDgBFALz0QHvtjsv06xsn3mTCCg==
+"@onekeyfe/hd-core@^0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-core/-/hd-core-0.3.26.tgz#e77f1b6024a8a5a8f3f7a82459e31d2263414162"
+  integrity sha512-hJ8AElOXPAoPb+wbWJQEO+BT6bQ4972UMD+0vY+zHznLnxW7fnlOPoRmqP65GKg7QwVD6/IXGCxIuoabNXOHSA==
   dependencies:
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
-    "@onekeyfe/hd-transport" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-shared" "^0.3.26"
+    "@onekeyfe/hd-transport" "^0.3.26"
     axios "^0.27.2"
     bignumber.js "^9.0.2"
     bytebuffer "^5.0.1"
@@ -135,40 +135,40 @@
     parse-uri "^1.0.7"
     semver "^7.3.7"
 
-"@onekeyfe/hd-shared@^0.3.23-alpha.3":
-  version "0.3.23-alpha.3"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-shared/-/hd-shared-0.3.23-alpha.3.tgz#0dac94b88a6cdfdd865098da5a0eb6a612efeb14"
-  integrity sha512-rYdjx+atBmdxurQmqcmzZx7zPfmvM7reHmTktnEfPkvUGpJQztwbtz5W/+sGGeOjSB9h8snQs2/yeIERnK+mHA==
+"@onekeyfe/hd-shared@^0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-shared/-/hd-shared-0.3.26.tgz#84a33b52dd479903d391ddaa06e02e0dcac8c176"
+  integrity sha512-QdOB7ZMOa2GdFBlCoTuX3gQw3DzgtbjfkhmQMsUPuOwOBIVz37JO6M9icMpOa2PSy26lmxHUvGVV589JkBBsyQ==
 
-"@onekeyfe/hd-transport-http@^0.3.23-alpha.3":
-  version "0.3.23-alpha.3"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-http/-/hd-transport-http-0.3.23-alpha.3.tgz#015743fb757f48ef9d184e9c93ffb3f654ae2721"
-  integrity sha512-b4ldrqC4KmjJqs4eKtWEXc2VG0YyqU464yi2hhvL5FzEaCsjBFXOiHiLESPxX+5/tX/FpBDy1Mnlt/wq/kjfwQ==
+"@onekeyfe/hd-transport-http@^0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-http/-/hd-transport-http-0.3.26.tgz#542832ec29300f40efc77168620695891e2ed050"
+  integrity sha512-jyuyRZag8vvsv7bwYabQY2m6Y8vfqo1XlSMkGweJ/tSrIYvBlRl5Ge3uq8Iv/pi6nGHPonFkM7cntzmqogKLiQ==
   dependencies:
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
-    "@onekeyfe/hd-transport" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-shared" "^0.3.26"
+    "@onekeyfe/hd-transport" "^0.3.26"
     axios "^0.27.2"
 
-"@onekeyfe/hd-transport-lowlevel@^0.3.23-alpha.3":
-  version "0.3.23-alpha.3"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-lowlevel/-/hd-transport-lowlevel-0.3.23-alpha.3.tgz#8cca55331b239e1b96a91082400a7a97a0047a83"
-  integrity sha512-Yw3CwWI1MBMk4aJ/wlV9S5R+86fEStk83/SqO8/mWCGLQYU+zurlvcxL6KVkkxU08BjPZjhh1bcQrpa42wbtBQ==
+"@onekeyfe/hd-transport-lowlevel@^0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-lowlevel/-/hd-transport-lowlevel-0.3.26.tgz#6afd4f540d9fd6dd9c3758f8ddc04ed2be864d83"
+  integrity sha512-yoP7NfLiVsThmqawYnOShwcmS/kXujeUsrkTLe5/SRyy9JJrLdMZg7iT8pyjfOoRhhGN6sHhB3NtWajOCFPeSA==
   dependencies:
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
-    "@onekeyfe/hd-transport" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-shared" "^0.3.26"
+    "@onekeyfe/hd-transport" "^0.3.26"
 
-"@onekeyfe/hd-transport-webusb@^0.3.23-alpha.3":
-  version "0.3.23-alpha.3"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-webusb/-/hd-transport-webusb-0.3.23-alpha.3.tgz#613c53c32c850b712e021a8156ed3420745515c3"
-  integrity sha512-6I+0Bmkyy0FcDEVpEuv8bejHgO7Kyawwap8ThClI6FZN8JDQBuEdgLQ7oNtYCpqXZGR1tvFAkHhpKoefbQ3jGQ==
+"@onekeyfe/hd-transport-webusb@^0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport-webusb/-/hd-transport-webusb-0.3.26.tgz#ade63749e86850e1f2d66690ea2983359a1d5272"
+  integrity sha512-4chnfyCG8BU5GCcGX7Kphvhh382VYeLie/fRhKl2rUz/3VgOaZtHXqNF/iAQ2Je3D7CuEmq8woqVFTTTcvfRew==
   dependencies:
-    "@onekeyfe/hd-shared" "^0.3.23-alpha.3"
-    "@onekeyfe/hd-transport" "^0.3.23-alpha.3"
+    "@onekeyfe/hd-shared" "^0.3.26"
+    "@onekeyfe/hd-transport" "^0.3.26"
 
-"@onekeyfe/hd-transport@^0.3.23-alpha.3":
-  version "0.3.23-alpha.3"
-  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport/-/hd-transport-0.3.23-alpha.3.tgz#0c350defe136abc3196510de1078160cc4d3f878"
-  integrity sha512-F0Rt7bGjFKOBeYYwnUfNjMWs6KUUcKK7SeQ23ysyRJMnco2foFJ8GBiSk+398oH1HA6WwoD1TqAyKvT9S34BTw==
+"@onekeyfe/hd-transport@^0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@onekeyfe/hd-transport/-/hd-transport-0.3.26.tgz#f361c829e8c54084575c81b7367534a57ba52821"
+  integrity sha512-W6m6cT/rtljqMiEqfcC5x4tvvpRnZSZeAhfqwLEQZAApnKY24GtHpSniSoWc6xs7O0Evh1eck+1BC3QHM/zzew==
   dependencies:
     bytebuffer "^5.0.1"
     long "^4.0.0"
