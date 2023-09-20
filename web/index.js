@@ -217,17 +217,43 @@ function registerBridgeHandler(bridge) {
 			const { connectId, deviceId, path, coin, showOnOneKey } = data
 			// 该方法只需要钱包开启 passphrase 时调用，如果钱包未启用 passphrase，不需要调用该方法，以便减少与硬件的交互次数，提高用户体验
 			// passphraseState 理论上应该由 native 传入，创建完一个隐藏钱包后客户端对 passphraseState 进行缓存
-			const passphraseStateRes = await SDK.getPassphraseState(connectId);
+			// const passphraseStateRes = await SDK.getPassphraseState(connectId);
 
-			const params = {
-				path,
-				coin,
-				showOnOneKey,
-			}
-			// 如果用户打开 passphrase ，则需要传入参数 passphraseState
-			passphraseStateRes.payload && (params['passphraseState'] = passphraseStateRes.payload)
-			const response = await SDK.btcGetAddress(connectId, deviceId, params)
-			callback(response)
+			// const params = {
+			// 	path,
+			// 	coin,
+			// 	showOnOneKey,
+			// }
+			// // 如果用户打开 passphrase ，则需要传入参数 passphraseState
+			// passphraseStateRes.payload && (params['passphraseState'] = passphraseStateRes.payload)
+			// const response = await SDK.btcGetAddress(connectId, deviceId, params)
+			// callback(response)
+
+			const start = Date.now();
+			const res = await SDK.btcGetAddress(connectId, deviceId, {
+				bundle: [
+					{ path: "m/84'/0'/0'/0/0", showOnOneKey: false },
+					{ path: "m/84'/0'/1'/0/0", showOnOneKey: false },
+					{ path: "m/84'/0'/2'/0/0", showOnOneKey: false },
+					{ path: "m/84'/0'/3'/0/0", showOnOneKey: false },
+					{ path: "m/84'/0'/4'/0/0", showOnOneKey: false },
+				],
+			});
+			await SDK.evmGetAddress(connectId, deviceId, {
+				bundle: [
+					{ path: "m/44'/60'/0'/0/10", showOnOneKey: false },
+					{ path: "m/44'/60'/0'/0/11", showOnOneKey: false },
+					{ path: "m/44'/60'/0'/0/12", showOnOneKey: false },
+					{ path: "m/44'/60'/0'/0/13", showOnOneKey: false },
+					{ path: "m/44'/60'/0'/0/14", showOnOneKey: false },
+				],
+			});
+
+			const end = Date.now();
+			console.log('time:', end - start);
+			// const response = await SDK.evmSignTypedData(connectId, deviceId, params)
+			callback(res)
+
 		} catch (e) {
 			console.error(e)
 			callback({success: false, error: e.message})
