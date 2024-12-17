@@ -100,49 +100,63 @@ class ViewController: UIViewController {
     }
     
     @objc func onInitializeSDK() {
-        bridge.call(handlerName: "init", data: [1, 2, 3]) { (responseData) in
+        print("🔵 onInitializeSDK called")
+       bridge.call(handlerName: "init", data: [1, 2, 3]) { (responseData) in
             print("init result: ", responseData ?? "")
         }
     }
     
     @objc func onSearch() {
-        bridge.call(handlerName: "searchDevice", data: nil, callback: {(responseData) in
-            print("searchDevice result ===>>>: ", responseData ?? "")
-        })
+        print("🔵 onSearch called")
+        bridge.call(handlerName: "bridgeCommonCall", data: ["name": "searchDevices", "data": [
+            "connectId": "",
+            "deviceId": ""
+        ]]) { responseData in
+            print("🔵 searchDevice callback received with result:", responseData ?? "nil")
+        }
     }
     
     func registerBridgeHandler() {
+        print("=== Starting to register bridge handlers ===")
+        
         // enumerate
         bridge.register(handlerName: "enumerate") { parameters, callback in
-            print("plugin call enumerate")
+            print("🔵 enumerate called with parameters:", parameters ?? "nil")
             self.manager.scanForPeripherals(withServices: [CBUUID(string: self.ServiceID)], options: nil)
+            print("🔵 Started scanning for peripherals with ServiceID:", self.ServiceID)
+            
             if let peripheral = self.peripheral {
                 if (peripheral.identifier.uuidString.count > 0) {
+                    print("🔵 Found existing peripheral:", peripheral.name ?? "unnamed", "id:", peripheral.identifier.uuidString)
                     callback?([["name": self.peripheral.name!, "id": self.peripheral.identifier.uuidString]])
                 }
             }
             
             if let _callback = callback {
+                print("🔵 Storing search device callback")
                 self.searchDeviceCallback = _callback
+            } else {
+                print("⚠️ No callback provided for enumerate")
             }
         }
         
         // connect
         bridge.register(handlerName: "connect") { _, callback in
             self.manager.connect(self.peripheral)
-            callback?(["success": true])
+                callback?(["success": true])
         }
         
         // disconnect
         bridge.register(handlerName: "disconnect") { _, callback in
             self.manager.cancelPeripheralConnection(self.peripheral)
-            callback?(["success": true])
+                callback?(["success": true])
         }
         
         // send
         bridge.register(handlerName: "send") { params, callback in
             print("called send method: ", params ?? "")
             if let data = params?["data"] {
+                print("🔵 Sending data:", data)
                 self.peripheral.writeValue((data as! String).hexData, for: self.writeCharacteristic, type: .withoutResponse)
                 callback?(["success": true])
 
@@ -157,49 +171,87 @@ class ViewController: UIViewController {
     }
     
     @objc func onGetFeatures() {
-        bridge.call(handlerName: "getFeatures", data: ["connectId": self.peripheral.identifier.uuidString]) { responseData in
+        print("🔵 onGetFeatures called")
+        let data: [String: Any] = [
+            "name": "getFeatures",
+            "data": [
+                "connectId": self.device?.getConnectId() ?? "",
+                "deviceId": self.device?.getDeviceId() ?? "",
+            ]
+        ]
+        
+        bridge.call(handlerName:"bridgeCommonCall", data: data) { responseData in
             print("getFeatures response: ", responseData ?? "")
-            if let responseDictionary = responseData as? [String: Any],
-               let success = responseDictionary["success"] as? Int,
-               success == 1,
-               let payload = responseDictionary["payload"] as? [String: Any],
-               let deviceId = payload["device_id"] as? String {
-                self.device = Device(connectId: self.device?.getConnectId() ?? self.peripheral.identifier.uuidString, deviceId: deviceId)
-                print("connectId: ", self.device?.getConnectId() ?? "", " deviceId: ", self.device?.getDeviceId() ?? "")
+            if let responseDictionary = responseData as? [String: Any] {
+                if let success = responseDictionary["success"] as? Int,
+                   success == 1,
+                   let payload = responseDictionary["payload"] as? [String: Any],
+                   let deviceId = payload["device_id"] as? String {
+                    self.device = Device(connectId: self.device?.getConnectId() ?? self.peripheral.identifier.uuidString, deviceId: deviceId)
+                    print("✅ Device updated - connectId:", self.device?.getConnectId() ?? "", "deviceId:", self.device?.getDeviceId() ?? "")
+                } else {
+                    print("⚠️ Invalid response format or unsuccessful response")
+                }
+            } else {
+                print("⚠️ Could not parse response as dictionary")
             }
         }
     }
     
     @objc func onGetBitcoinAddress() {
-        bridge.call(handlerName: "btcGetAddress", data: [
-            "connectId": self.device?.getConnectId() ?? "",
-            "deviceId": self.device?.getDeviceId() ?? "",
-            "path": "m/49'/0'/0'/0/0",
-            "coin": "btc",
-            "showOnOneKey": true
+
+    bridge.call(handlerName: "bridgeCommonCall", data: [
+            "name": "btcGetAddress",
+            "data": [
+                "connectId": self.device?.getConnectId() ?? "",
+                "deviceId": self.device?.getDeviceId() ?? "",
+                "path": "m/49'/0'/0'/0/0",
+                "coin": "btc",
+                "showOnOneKey": true
+            ]
         ] as [String : Any]) { response in
             print("get bitcoin address response: ", response ?? "")
         }
     }
-
 }
 
 //MARK:- CBCentralManagerDelegate
 extension ViewController: CBCentralManagerDelegate {
     @objc func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if central.state == .poweredOn {
-            print("====> Bluetooth powerdOn")
+        print("🔵 Bluetooth state updated:", central.state.rawValue)
+        switch central.state {
+        case .poweredOn:
+            print("✅ Bluetooth powered on and ready")
+        case .poweredOff:
+            print("⚠️ Bluetooth is powered off")
+        case .unauthorized:
+            print("⚠️ Bluetooth is unauthorized")
+        case .unsupported:
+            print("⚠️ Bluetooth is unsupported")
+        case .resetting:
+            print("⚠️ Bluetooth is resetting")
+        default:
+            print("⚠️ Bluetooth is in unknown state")
         }
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        // 处理发现的设备，例如，将设备信息存储到数组中
-        self.peripheral = peripheral
-        print("peripheral ===> : ", peripheral.name, peripheral.identifier.uuidString)
+        // print("🔵 Discovered peripheral:", peripheral.name ?? "unnamed")
+        // print("🔵 Advertisement data:", advertisementData)
+        // print("🔵 RSSI:", RSSI)
         
-        searchDeviceCallback?([["name": peripheral.name!, "id": peripheral.identifier.uuidString]])
+        self.peripheral = peripheral
+        print("✅ Stored peripheral reference")
+        
+        if let callback = searchDeviceCallback {
+            print("🔵 Calling search device callback")
+            callback([["name": peripheral.name!, "id": peripheral.identifier.uuidString]])
+        } else {
+            print("⚠️ No search device callback available")
+        }
         
         manager.stopScan()
+        print("✅ Stopped scanning")
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
