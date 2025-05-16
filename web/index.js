@@ -16,14 +16,14 @@ const UI_RESPONSE = {
 
 let bridge;
 function setupWKWebViewJavascriptBridge(callback) {
-	if (window.WKWebViewJavascriptBridge) {
-		return callback(WKWebViewJavascriptBridge);
-	}
-	if (window.WKWVJBCallbacks) {
-		return window.WKWVJBCallbacks.push(callback);
-	}
-	window.WKWVJBCallbacks = [callback];
-	window.webkit.messageHandlers.iOS_Native_InjectJavascript.postMessage(null)
+  if (window.WKWebViewJavascriptBridge) {
+    return callback(WKWebViewJavascriptBridge);
+  }
+  if (window.WKWVJBCallbacks) {
+    return window.WKWVJBCallbacks.push(callback);
+  }
+  window.WKWVJBCallbacks = [callback];
+  window.webkit.messageHandlers.iOS_Native_InjectJavascript.postMessage(null);
 }
 
 setupWKWebViewJavascriptBridge(function (_bridge) {
@@ -36,8 +36,8 @@ let isInitialized = false;
 function getHardwareSDKInstance() {
   return new Promise(async (resolve, reject) => {
     if (!bridge) {
-			throw new Error('bridge is not connected')
-		}
+      throw new Error("bridge is not connected");
+    }
     if (isInitialized) {
       console.log("already initialized, skip");
       resolve(HardwareSDK);
@@ -46,7 +46,7 @@ function getHardwareSDKInstance() {
 
     const settings = {
       env: "lowlevel",
-      fetchConfig:true,
+      fetchConfig: true,
       debug: true,
     };
 
@@ -71,7 +71,7 @@ function createLowlevelPlugin() {
       return new Promise((resolve) => {
         bridge.callHandler("enumerate", {}, (response) => {
           console.log("===> call enumerate response: ", response);
-					resolve(response)
+          resolve(response);
         });
       });
     },
@@ -86,17 +86,17 @@ function createLowlevelPlugin() {
       return new Promise((resolve) => {
         runPromise = createDeferred();
         const response = runPromise.promise;
-				resolve(response)
+        resolve(response);
         // bridge.callHandler('receive', {}, async (response) => {
         // })
       });
     },
     connect: (uuid) => {
       return new Promise((resolve) => {
-        bridge.callHandler('connect', {uuid})
-				bridge.registerHandler('connectFinished', () => {
-					resolve()
-				})
+        bridge.callHandler("connect", { uuid });
+        bridge.registerHandler("connectFinished", () => {
+          resolve();
+        });
       });
     },
     disconnect: (uuid) => {
@@ -122,10 +122,22 @@ function createLowlevelPlugin() {
 function listenHardwareEvent(SDK) {
   SDK.on(UI_EVENT, (message) => {
     if (message.type === UI_REQUEST.REQUEST_PIN) {
-      // enter pin code on the device
-      SDK.uiResponse({
-        type: UI_RESPONSE.RECEIVE_PIN,
-        payload: "@@ONEKEY_INPUT_PIN_IN_DEVICE",
+      // Request PIN from iOS app or use hardware PIN
+      console.log("PIN requested, calling requestPinInput handler");
+      bridge.callHandler("requestPinInput", {}, (response) => {
+        // If response is not empty, use it as PIN, otherwise use hardware PIN
+        const pinPayload =
+          response && response !== ""
+            ? response
+            : "@@ONEKEY_INPUT_PIN_IN_DEVICE";
+        console.log(
+          "PIN response received:",
+          response ? "PIN entered" : "Using hardware PIN"
+        );
+        SDK.uiResponse({
+          type: UI_RESPONSE.RECEIVE_PIN,
+          payload: pinPayload,
+        });
       });
     }
     if (message.type === UI_REQUEST.REQUEST_PASSPHRASE) {
@@ -140,21 +152,31 @@ function listenHardwareEvent(SDK) {
       });
     }
     if (message.type === UI_REQUEST.REQUEST_BUTTON) {
-      console.log("request button, should show dialog on client");
+      console.log("Button confirmation requested, showing prompt on iOS");
+      // Notify iOS to show a confirmation dialog
+      bridge.callHandler("requestButtonConfirmation", {
+        message: message.payload?.message || "Please confirm on your device",
+      });
+    }
+
+    if (message.type === UI_REQUEST.CLOSE_UI_WINDOW) {
+      console.log("Request to close UI window received");
+      // Notify iOS to close any open prompts/dialogs
+      bridge.callHandler("closeUIWindow", {});
     }
   });
 }
 
 function registerBridgeHandler() {
-  bridge.registerHandler('init', async (data, callback) => {
-		try {
-			await getHardwareSDKInstance()
-			callback({success: true})
-		} catch (e) {
-			console.error(e)
-			callback({success: false, error: e.message})
-		}
-	})
+  bridge.registerHandler("init", async (data, callback) => {
+    try {
+      await getHardwareSDKInstance();
+      callback({ success: true });
+    } catch (e) {
+      console.error(e);
+      callback({ success: false, error: e.message });
+    }
+  });
   bridge.registerHandler("bridgeCommonCall", async (data, callback) => {
     console.log("bridgeCommonCall", data);
     try {
