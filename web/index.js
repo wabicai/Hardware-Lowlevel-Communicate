@@ -146,7 +146,7 @@ function listenHardwareEvent(SDK) {
         type: UI_RESPONSE.RECEIVE_PASSPHRASE,
         payload: {
           value: "",
-          passphraseOnDevice: true,
+          passphraseOnDevice: false,
           save: false,
         },
       });
