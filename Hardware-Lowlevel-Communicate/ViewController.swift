@@ -23,6 +23,7 @@ class ViewController: UIViewController {
     var getEvmAddressButton: UIButton!  // New button for EVM Address
     var checkFirmwareButton: UIButton!  // New button for firmware check
     var checkBleFirmwareButton: UIButton!  // New button for BLE firmware check
+    var evmSignTransactionButton: UIButton!  // New button for EVM Sign Transaction
     var bridge: WKWebViewJavascriptBridge!
     var manager: CBCentralManager!
     var peripheral: CBPeripheral!
@@ -48,6 +49,15 @@ class ViewController: UIViewController {
     var accumulatedDevices: [[String: String]] = []
     var enumerateCallback: ((Any?) -> Void)?
     var isAccumulatingDevices = false
+
+    // Device type constants
+    let deviceTypeClassic = "classic"
+    let deviceTypeTouch = "touch"
+    let deviceTypePro = "pro"
+    let deviceTypeUnknown = "unknown"
+
+    // Current device type
+    var currentDeviceType = "unknown"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -171,6 +181,7 @@ class ViewController: UIViewController {
         getEvmAddressButton = UIButton(type: .system)
         checkFirmwareButton = UIButton(type: .system)
         checkBleFirmwareButton = UIButton(type: .system)
+        evmSignTransactionButton = UIButton(type: .system)  // Initialize the new button
 
         // 设置按钮样式和目标动作 - 移除Initialize SDK按钮
         let buttons: [(UIButton, String, Selector)] = [
@@ -182,6 +193,10 @@ class ViewController: UIViewController {
             (
                 checkBleFirmwareButton, "Check BLE Firmware Release",
                 #selector(onCheckBleFirmwareRelease)
+            ),
+            (
+                evmSignTransactionButton, "EVM Sign Transaction",
+                #selector(onEvmSignTransaction)
             ),
         ]
 
@@ -423,6 +438,24 @@ class ViewController: UIViewController {
             ]
         ) { responseData in
             print("Device connection result:", responseData ?? "nil")
+
+            // Parse the response to get the device type
+            if let responseDict = responseData as? [String: Any],
+                let success = responseDict["success"] as? Bool,
+                success == true,
+                let payload = responseDict["payload"] as? [[String: Any]],
+                let deviceInfo = payload.first,
+                let deviceType = deviceInfo["deviceType"] as? String
+            {
+
+                // Store the device type
+                self.currentDeviceType = deviceType.lowercased()
+                print("✅ Device type identified: \(self.currentDeviceType)")
+            } else {
+                // Default to unknown if device type can't be determined
+                self.currentDeviceType = self.deviceTypeUnknown
+                print("⚠️ Could not determine device type from response")
+            }
         }
     }
 
@@ -602,6 +635,16 @@ extension ViewController {
 
     // 显示PIN码输入对话框，类似于Android的实现
     func showPinInputDialog(callback: ((Any?) -> Void)?) {
+        // Check if device is a Classic type - only show PIN input for Classic
+        print("🔵 PIN input requested, device type: \(currentDeviceType)")
+
+        // If not a Classic device, return empty string to use device PIN input
+        if currentDeviceType != deviceTypeClassic {
+            print("🔵 Device is not Classic, using device PIN input")
+            callback?("")
+            return
+        }
+
         // 定义键盘映射，与Android端相同
         let keyboardMap = ["7", "8", "9", "4", "5", "6", "1", "2", "3"]
 
@@ -848,7 +891,6 @@ extension UIView {
         let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
         animation.duration = 0.6
-        animation.values = [-10.0, 10.0, -7.0, 7.0, -5.0, 5.0, 0.0]
         layer.add(animation, forKey: "shake")
     }
 }
@@ -1225,6 +1267,39 @@ extension ViewController {
                     title: "BLE Firmware Check Result", message: message, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default))
                 self.present(alert, animated: true)
+            }
+        }
+    }
+
+    @objc func onEvmSignTransaction() {
+        print("🔵 onEvmSignTransaction called")
+
+        bridge.call(
+            handlerName: "bridgeCommonCall",
+            data: [
+                "name": "evmSignTransaction",
+                "data": [
+                    "connectId": self.device?.getConnectId() ?? "",
+                    "deviceId": self.device?.getDeviceId() ?? "",
+                    "path": "m/44'/60'/0'/0/0",
+                    "transaction": [
+                        "to": "0x8abb1d3d18945a61e86e5ab447545787d0497661",
+                        "value": "0x0",
+                        "gasPrice": "0x3b9aca00",  // Added gasPrice (1 Gwei)
+                        "gasLimit": "0x5208",
+                        "nonce": "0x0",
+                        "chainId": 1,
+                        "data": "0x",
+                    ],
+                    "useEmptyPassphrase": true,
+                ],
+            ] as [String: Any]
+        ) { response in
+            print("EVM sign transaction response: ", response ?? "")
+            if let responseDict = response as? [String: Any] {
+                self.updateResultText("EVM Sign Transaction: \(responseDict)")
+            } else {
+                self.updateResultText("Failed to sign EVM transaction")
             }
         }
     }
